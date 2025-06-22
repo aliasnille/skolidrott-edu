@@ -1,0 +1,30 @@
+[06-Mar-2025 18:09:14 Europe/Stockholm] PHP Warning:  Undefined array key "send_mail" in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 764
+[06-Mar-2025 18:14:56 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[06-Mar-2025 18:25:07 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[06-Mar-2025 22:58:33 Europe/Stockholm] PHP Warning:  Undefined array key "co_educator" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 51
+[06-Mar-2025 22:58:33 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[06-Mar-2025 23:01:34 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[06-Mar-2025 23:01:34 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[06-Mar-2025 23:01:34 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[06-Mar-2025 23:01:34 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[07-Mar-2025 07:17:41 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[09-Mar-2025 17:22:36 Europe/Stockholm] PHP Warning:  Undefined array key "co_educator" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 51
+[09-Mar-2025 17:22:36 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[12-Mar-2025 13:08:20 Europe/Stockholm] PHP Warning:  Undefined array key "co_educator" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 51
+[12-Mar-2025 13:08:20 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[21-Mar-2025 09:12:14 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 09:12:14 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 09:12:14 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 09:12:15 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[21-Mar-2025 10:55:02 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 10:55:02 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 10:55:02 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 10:55:02 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[21-Mar-2025 10:57:54 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 10:57:54 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 10:57:54 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[21-Mar-2025 10:57:54 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225
+[07-Apr-2025 15:05:05 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[07-Apr-2025 15:05:05 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[07-Apr-2025 15:05:05 Europe/Stockholm] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/s72491/domains/edu.skolidrottskane.se/public_html/src/functions.php on line 970
+[07-Apr-2025 15:05:05 Europe/Stockholm] PHP Warning:  Undefined array key "slide" in /home/s72491/domains/edu.skolidrottskane.se/public_html/views/course.php on line 225

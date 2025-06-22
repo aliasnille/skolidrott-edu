@@ -1,0 +1,175 @@
+@import '../fonts/fonts.css';
+@import 'tw-colors.css';
+
+html, body {
+    font-family: 'Calibre';
+    font-weight: 500;
+    font-style: normal;
+}
+
+body.login, body.forgot-password, body.reset-password, body.register, body.not-found {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;    
+}
+
+body.bg-overlay {
+    background: linear-gradient(rgba(19,101,171,.85), rgba(19,101,171,.85)), url('../img/bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+body.dashboard {
+    background-color: #fff;
+    background-image: url('../img/bg-dashboard-new.png');
+    background-position: right -10% bottom -10%;
+    background-repeat: no-repeat;
+    background-size: 750px;
+}
+
+header.start {
+    height: 400px;
+    background: linear-gradient(rgba(0,0,0,.50), rgba(0,0,0,.50)), url('../img/header.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top center;
+}
+
+header.profile {
+    height: 400px;
+    background: linear-gradient(rgba(0,0,0,.50), rgba(0,0,0,.50)), url('../img/header-2.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+/* nav.navbar {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+} */
+
+.login-container, .forgot-password-container, .reset-password-container, .register-container {
+    width: 360px;
+}
+
+.register-container {
+    width: 720px;
+}
+
+.text-custom-primary {
+    color: #1365ab; 
+}
+
+.btn-custom-primary {
+    background-color: #1365ab;
+    color: #fff;
+}
+
+.btn-custom-primary:hover, .btn-custom-primary:focus, .btn-custom-primary:active {
+    background-color: #2072B8;
+    border-color: #2072B8;
+    color: #fff;    
+}
+
+.btn-custom-secondary {
+    background-color: #55c168;
+    color: #fff;
+}
+
+.btn-custom-secondary:hover, .btn-custom-secondary:focus, .btn-custom-secondary:active {
+    background-color: #48B45B !important;
+    border-color: #48B45B !important;
+    color: #fff !important;
+}
+
+.btn-custom-tertiary {
+    background-color: #ec5a29;
+    color: #fff;
+}
+
+.btn-custom-tertiary:hover, .btn-custom-tertiary:focus, .btn-custom-tertiary:active {
+    background-color: #DF4D1C !important;
+    border-color: #DF4D1C !important;
+    color: #fff !important;
+}
+
+.bg-custom-primary {
+    background-color: #1365ab;
+}
+
+.login-container h1, .forgot-password-container h1, .register-container h1 {
+    font-family: 'Calibre';
+    font-weight: bold;
+    font-style: normal;
+    letter-spacing: 0.5px;    
+}
+
+.form-control {
+    /*height: 38px;*/
+    padding: 10px 12px 4px 12px;
+    box-sizing: border-box;
+}
+
+.btn {
+    /* height: 38px; */
+    padding: 8px 12px 4px 12px;
+    box-sizing: border-box;
+}
+
+.navbar-brand {
+    font-family: 'Calibre';
+    font-weight: bold;
+    font-style: normal;
+    letter-spacing: 0.5px;
+}
+
+/* Grab & Drop */
+#slidesContainer .col-3 {
+    cursor: grab;
+}
+  
+#slidesContainer .col-3.sortable-chosen {
+    cursor: grabbing !important;
+}
+
+/* Loader container */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Spinner animation */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #4284BC;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Keyframes for spin animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}    
+
+@media (max-width: 575.98px) {
+    .login-container, .forgot-password-container, .register-container {
+        width: 95%;
+    }
+}
