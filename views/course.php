@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_co_educator']) 
             <?php if ($content[$slide_id]['type'] == 'placeholder' && $content[$slide_id]['module'] == 'educator') { ?>            
             <div class="content">
                 <div class="ratio ratio-16x9 position-relative">
-                    <img src="<?= (!empty($content[$slide_id]['link'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $content[$slide_id]['link'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
+                    <img src="<?= (!empty($course['background'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $course['background'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
                     <div class="position-absolute top-0 start-0 w-100 h-100 px-5" style="z-index: 2;">
                         <div class="row w-100 h-100">
                             <div class="col d-flex justify-content-center align-items-center">
@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_co_educator']) 
             <?php if ($content[$slide_id]['type'] == 'placeholder' && $content[$slide_id]['module'] == 'co_educator') { ?>            
             <div class="content">
                 <div class="ratio ratio-16x9 position-relative">
-                    <img src="<?= (!empty($content[$slide_id]['link'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $content[$slide_id]['link'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
+                    <img src="<?= (!empty($course['background'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $course['background'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
                     <div class="position-absolute top-0 start-0 w-100 h-100 px-5" style="z-index: 2;">
                         <div class="row w-100 h-100">
                             <div class="col text-start">
@@ -192,10 +192,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_co_educator']) 
             <?php if ($content[$slide_id]['type'] == 'placeholder' && $content[$slide_id]['module'] == 'statement') { ?>            
             <div class="content">
                 <div class="ratio ratio-16x9 position-relative">
-                    <img src="<?= (!empty($content[$slide_id]['link'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $content[$slide_id]['link'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
+                    <img src="<?= (!empty($course['background'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $course['background'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
                     <div class="text-over-content position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center px-5" style="z-index: 2; color: #fff; text-align: center;">
                         <h1 class="display-3 fw-bold">
-                            <?= $content[$slide_id]['content']['heading']; ?>
+                            <?= $content[$slide_id]['content']['heading'] ?? $content[$slide_id]['title']; ?>
                         </h1>
                     </div>
                 </div>                
@@ -205,18 +205,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_co_educator']) 
             <?php if ($content[$slide_id]['type'] == 'placeholder' && $content[$slide_id]['module'] == 'text_block') { ?>            
             <div class="content">
                 <div class="ratio ratio-16x9 position-relative">
-                    <img src="<?= (!empty($content[$slide_id]['link'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $content[$slide_id]['link'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
+                    <img src="<?= (!empty($course['background'])) ? CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/' . $course['background'] : CONFIG['siteURL'] . '/courses/' . $course['hash'] . '/default.png'; ?>" class="position-absolute w-100 h-100" style="object-fit: cover; z-index: 1;">
                     <div class="text-over-content position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center px-5" style="z-index: 2; color: #fff; text-align: center;">
-                        <?php if (!empty($content[$slide_id]['content']['heading'])) { ?>
-                        <h1 class="display-3 fw-bold">
-                            <?= $content[$slide_id]['content']['heading']; ?>
-                        </h1>
-                        <?php } ?>
-                        <?php if (!empty($content[$slide_id]['content']['text'])) { ?>
-                        <p class="fs-3">
-                            <?= $content[$slide_id]['content']['text']; ?>
-                        </p>
-                        <?php } ?>                        
+                        <div>
+                            <?php if (!empty($content[$slide_id]['content']['heading'])) { ?>
+                            <h1 class="display-3 fw-bold">
+                                <?= $content[$slide_id]['content']['heading']; ?>
+                            </h1>
+                            <?php } ?>
+                            <?php if (!empty($content[$slide_id]['content']['text'])) { ?>
+                            <p class="fs-3">
+                                <?= $content[$slide_id]['content']['text']; ?>
+                            </p>
+                            <?php } ?>
+                        </div>
                     </div>
                 </div>                
             </div>

@@ -56,9 +56,34 @@ include 'templates/header.php';
 
             <h1 class="fs-1 mb-4">Administration</h1>
 
-            <?php if (isset($status) && !empty($status)) { echo $status; } ?>            
+            <?php if (isset($status) && !empty($status)) { echo $status; } ?>
 
-            <div class="bg-light border rounded-3 p-4 mb-5">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="ti ti-book"></i> Kurshantering</h5>
+                            <p class="card-text">Skapa, redigera och hantera utbildningskurser.</p>
+                            <a href="<?= CONFIG['siteURL']; ?>/course-management" class="btn btn-custom-primary">
+                                <i class="ti ti-arrow-right"></i> Hantera kurser
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="ti ti-mail"></i> Inbjudningar</h5>
+                            <p class="card-text">Skapa och hantera inbjudningskoder för nya användare.</p>
+                            <a href="#invitations" class="btn btn-custom-secondary">
+                                <i class="ti ti-arrow-down"></i> Hantera inbjudningar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="invitations" class="bg-light border rounded-3 p-4 mb-5">
                 <form method="POST" action="<?= CONFIG['siteURL']; ?>/administration">
                     <?php set_csrf(); ?>
 

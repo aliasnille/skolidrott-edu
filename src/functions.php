@@ -797,7 +797,7 @@ function get_courses($type = 'originals') {
     global $mysqli;    
 
     $sql    = [];
-    $sql[]  = "SELECT id, `hash`, title, byline, `description`, created_at, `image`";
+    $sql[]  = "SELECT id, `hash`, title, byline, `description`, created_at, `image`, background";
     $sql[]  = "FROM courses";
     $sql[]  = "WHERE is_active = 1";
     if ($type == 'duplicates') {
@@ -807,14 +807,14 @@ function get_courses($type = 'originals') {
         $sql[]  = "AND (is_copy IS NULL OR is_copy = 0)";
     }
     $sql    = implode(" ", $sql);
-    
+
     $stmt = $mysqli->prepare($sql);
     if ($type == 'duplicates') {
         $stmt->bind_param('i', $_SESSION['id']);
     }
     $stmt->execute();
-    $stmt->store_result(); 
-    $stmt->bind_result($id, $hash, $title, $byline, $description, $created_at, $image);
+    $stmt->store_result();
+    $stmt->bind_result($id, $hash, $title, $byline, $description, $created_at, $image, $background);
 
     if ($stmt->num_rows > 0) {
         
@@ -829,6 +829,7 @@ function get_courses($type = 'originals') {
                 'description'   => $description,
                 'created_at'    => $created_at,
                 'image'         => $image,
+                'background'    => $background,
             ];
         }
         $stmt->close();    
@@ -850,7 +851,7 @@ function get_course($id, $uid = null) {
     global $mysqli;    
 
     $sql    = [];
-    $sql[]  = "SELECT id, `hash`, title, byline, `description`, created_at, `image`, content";
+    $sql[]  = "SELECT id, `hash`, title, byline, `description`, created_at, `image`, background, content, is_copy";
     $sql[]  = "FROM courses";
     $sql[]  = "WHERE id = ? AND is_active = 1";
     if ($uid != null && is_numeric($uid)) {
@@ -858,7 +859,7 @@ function get_course($id, $uid = null) {
     }
     $sql[]  = "LIMIT 1";
     $sql    = implode(" ", $sql);
-    
+
     $stmt = $mysqli->prepare($sql);
     if ($uid != null && is_numeric($uid)) {
         $stmt->bind_param('ii', $id, $uid);
@@ -866,7 +867,7 @@ function get_course($id, $uid = null) {
         $stmt->bind_param('i', $id);
     }
     $stmt->execute();
-    $stmt->bind_result($id, $hash, $title, $byline, $description, $created_at, $image, $content);
+    $stmt->bind_result($id, $hash, $title, $byline, $description, $created_at, $image, $background, $content, $is_copy);
     $result = $stmt->fetch();
     $stmt->close();
 
@@ -876,10 +877,13 @@ function get_course($id, $uid = null) {
             'id'                => $id,
             'hash'              => $hash,
             'title'             => $title,
+            'byline'            => $byline,
             'description'       => $description,
             'created_at'        => $created_at,
             'image'             => $image,
-            'content'           => json_decode($content, true)
+            'background'        => $background,
+            'content'           => json_decode($content, true),
+            'is_copy'           => $is_copy
         ];
 
     } else {
@@ -1001,8 +1005,8 @@ function duplicate_course($post) {
         // Duplicate course
         $sql   = [];
         $sql[] = "INSERT INTO courses";
-        $sql[] = "(hash, title, byline, description, image, content, updated_at, is_copy, uid)";
-        $sql[] = "SELECT `hash`, ?, byline, `description`, `image`, content, NOW(), ?, ?";
+        $sql[] = "(hash, title, byline, description, image, background, content, updated_at, is_copy, uid)";
+        $sql[] = "SELECT `hash`, ?, byline, `description`, `image`, background, content, NOW(), ?, ?";
         $sql[] = "FROM courses";
         $sql[] = "WHERE id = ?";
         $sql   = implode(" ", $sql);
@@ -1031,24 +1035,52 @@ function duplicate_course($post) {
 function delete_course($id, $uid) {
 
     global $mysqli;
-    
+
     if (isset($id) && !empty($id) && is_numeric($id)) {
 
-        $sql = "DELETE FROM courses WHERE id = ? AND uid = ?";
-        
+        // Get course hash to delete directory
+        $sql = "SELECT hash FROM courses WHERE id = ? AND uid = ?";
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('ii', $id, $uid);
-        
-        if ($stmt->execute()) {
-            $stmt->close();
+        $stmt->execute();
+        $stmt->bind_result($hash);
+        $result = $stmt->fetch();
+        $stmt->close();
 
-            return true;
-        } else {
-            $stmt->close();
-            
-            return false;
+        if ($result) {
+            // Check if there are any other courses (original or copies) using this hash
+            $sql_check = "SELECT COUNT(*) FROM courses WHERE hash = ? AND is_active = 1 AND NOT (id = ? AND uid = ?)";
+            $stmt_check = $mysqli->prepare($sql_check);
+            $stmt_check->bind_param('sii', $hash, $id, $uid);
+            $stmt_check->execute();
+            $stmt_check->bind_result($other_count);
+            $stmt_check->fetch();
+            $stmt_check->close();
+
+            // Delete course from database
+            $sql = "DELETE FROM courses WHERE id = ? AND uid = ?";
+            $stmt = $mysqli->prepare($sql);
+            $stmt->bind_param('ii', $id, $uid);
+
+            if ($stmt->execute()) {
+                $stmt->close();
+
+                // Only delete course directory if no other courses use this hash
+                if ($other_count == 0) {
+                    $course_dir = 'courses/' . $hash;
+                    if (is_dir($course_dir)) {
+                        delete_directory_recursive($course_dir);
+                    }
+                }
+
+                return true;
+            } else {
+                $stmt->close();
+
+                return false;
+            }
         }
-        
+
     } else {
 
         return false;
@@ -1284,4 +1316,369 @@ function make_content($content, $educator = null, $co_educator = null) {
 
     return $array;
 
+}
+
+// Generate course hash
+function generate_course_hash() {
+    return substr(sha1(uniqid(mt_rand(), true)), 0, 8);
+}
+
+// Create course directory
+function create_course_directory($hash) {
+    $course_dir = 'courses/' . $hash;
+
+    if (!file_exists($course_dir)) {
+        if (mkdir($course_dir, 0755, true)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Get all courses for admin
+function get_all_courses() {
+    global $mysqli;
+
+    $sql    = [];
+    $sql[]  = "SELECT id, `hash`, title, byline, `description`, created_at, `image`, background, is_copy, uid";
+    $sql[]  = "FROM courses";
+    $sql[]  = "WHERE is_active = 1 AND (is_copy IS NULL OR is_copy = 0)";
+    $sql[]  = "ORDER BY created_at DESC";
+    $sql    = implode(" ", $sql);
+
+    $stmt = $mysqli->prepare($sql);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id, $hash, $title, $byline, $description, $created_at, $image, $background, $is_copy, $uid);
+
+    if ($stmt->num_rows > 0) {
+
+        $array = [];
+
+        while ($stmt->fetch()) {
+            $array[] = [
+                'id'            => $id,
+                'hash'          => $hash,
+                'title'         => $title,
+                'byline'        => $byline,
+                'description'   => $description,
+                'created_at'    => $created_at,
+                'image'         => $image,
+                'background'    => $background,
+                'is_copy'       => $is_copy,
+                'uid'           => $uid
+            ];
+        }
+        $stmt->close();
+
+        return $array;
+
+    } else {
+
+        $stmt->close();
+        return false;
+
+    }
+}
+
+// Create new course
+function create_course($post, $image_filename = null, $background_filename = null) {
+    global $mysqli;
+
+    if (isset($post['title']) && !empty($post['title'])) {
+
+        $hash = generate_course_hash();
+        $created_at = date('Y-m-d H:i:s');
+
+        // Create course directory
+        if (!create_course_directory($hash)) {
+            return false;
+        }
+
+        // Default empty content
+        $content = json_encode([]);
+
+        $sql = [];
+        $sql[] = "INSERT INTO courses";
+        $sql[] = "(hash, title, byline, description, image, background, content, created_at, is_copy, uid, is_active)";
+        $sql[] = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, NULL, 1)";
+        $sql = implode(" ", $sql);
+
+        $byline = $post['byline'] ?? '';
+        $description = isset($post['description']) ? substr($post['description'], 0, 255) : '';
+        $image = $image_filename ?? 'thumb.png';
+        $background = $background_filename ?? 'default.png';
+
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param('ssssssss',
+            $hash,
+            $post['title'],
+            $byline,
+            $description,
+            $image,
+            $background,
+            $content,
+            $created_at
+        );
+
+        if ($stmt->execute()) {
+            $course_id = $stmt->insert_id;
+            $stmt->close();
+            return $course_id;
+        } else {
+            $stmt->close();
+            return false;
+        }
+    }
+
+    return false;
+}
+
+// Update course basic info
+function update_course_info($post, $course_id, $image_filename = null, $background_filename = null) {
+    global $mysqli;
+
+    if (isset($post) && !empty($post) && isset($course_id) && !empty($course_id) && is_numeric($course_id)) {
+
+        $updated_at = date('Y-m-d H:i:s');
+
+        $sql = [];
+        $sql[] = "UPDATE courses";
+        $sql[] = "SET title = ?, byline = ?, description = ?, updated_at = ?";
+
+        // Add image update if provided
+        if ($image_filename !== null) {
+            $sql[] = ", image = ?";
+        }
+
+        // Add background update if provided
+        if ($background_filename !== null) {
+            $sql[] = ", background = ?";
+        }
+
+        $sql[] = "WHERE id = ? AND (is_copy IS NULL OR is_copy = 0)";
+        $sql = implode(" ", $sql);
+
+        $byline = $post['byline'] ?? '';
+        $description = isset($post['description']) ? substr($post['description'], 0, 255) : '';
+
+        $stmt = $mysqli->prepare($sql);
+
+        // Bind parameters dynamically based on what's being updated
+        if ($image_filename !== null && $background_filename !== null) {
+            $stmt->bind_param('ssssssi',
+                $post['title'],
+                $byline,
+                $description,
+                $updated_at,
+                $image_filename,
+                $background_filename,
+                $course_id
+            );
+        } elseif ($image_filename !== null) {
+            $stmt->bind_param('sssssi',
+                $post['title'],
+                $byline,
+                $description,
+                $updated_at,
+                $image_filename,
+                $course_id
+            );
+        } elseif ($background_filename !== null) {
+            $stmt->bind_param('sssssi',
+                $post['title'],
+                $byline,
+                $description,
+                $updated_at,
+                $background_filename,
+                $course_id
+            );
+        } else {
+            $stmt->bind_param('ssssi',
+                $post['title'],
+                $byline,
+                $description,
+                $updated_at,
+                $course_id
+            );
+        }
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true;
+        } else {
+            $stmt->close();
+            return false;
+        }
+    }
+
+    return false;
+}
+
+// Delete course (admin version)
+function delete_course_admin($id) {
+    global $mysqli;
+
+    if (isset($id) && !empty($id) && is_numeric($id)) {
+
+        // Get course hash to delete directory
+        $sql = "SELECT hash FROM courses WHERE id = ?";
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $stmt->bind_result($hash);
+        $result = $stmt->fetch();
+        $stmt->close();
+
+        if ($result) {
+            // Check if there are any copies of this course before deleting files
+            $sql_check = "SELECT COUNT(*) FROM courses WHERE hash = ? AND is_copy = 1 AND is_active = 1";
+            $stmt_check = $mysqli->prepare($sql_check);
+            $stmt_check->bind_param('s', $hash);
+            $stmt_check->execute();
+            $stmt_check->bind_result($copy_count);
+            $stmt_check->fetch();
+            $stmt_check->close();
+
+            // Delete course from database
+            $sql = "DELETE FROM courses WHERE id = ?";
+            $stmt = $mysqli->prepare($sql);
+            $stmt->bind_param('i', $id);
+
+            if ($stmt->execute()) {
+                $stmt->close();
+
+                // Only delete course directory if no copies exist
+                if ($copy_count == 0) {
+                    $course_dir = 'courses/' . $hash;
+                    if (is_dir($course_dir)) {
+                        delete_directory_recursive($course_dir);
+                    }
+                }
+
+                return true;
+            } else {
+                $stmt->close();
+                return false;
+            }
+        }
+    }
+
+    return false;
+}
+
+// Update course content (slides)
+function update_course_content($course_id, $content) {
+    global $mysqli;
+
+    if (isset($course_id) && !empty($course_id) && is_numeric($course_id)) {
+
+        $updated_at = date('Y-m-d H:i:s');
+        $content_json = json_encode($content);
+
+        $sql = [];
+        $sql[] = "UPDATE courses";
+        $sql[] = "SET content = ?, updated_at = ?";
+        $sql[] = "WHERE id = ? AND (is_copy IS NULL OR is_copy = 0)";
+        $sql = implode(" ", $sql);
+
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param('ssi', $content_json, $updated_at, $course_id);
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true;
+        } else {
+            $stmt->close();
+            return false;
+        }
+    }
+
+    return false;
+}
+
+// Handle file upload for course slides
+function upload_course_file($file, $course_hash, $allowed_types = ['image/jpeg', 'image/png', 'image/gif']) {
+
+    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+        return false;
+    }
+
+    // Validate file type
+    if (!in_array($file['type'], $allowed_types)) {
+        return false;
+    }
+
+    // Validate file size (max 5MB)
+    if ($file['size'] > 5 * 1024 * 1024) {
+        return false;
+    }
+
+    $course_dir = 'courses/' . $course_hash;
+
+    // Create directory if it doesn't exist
+    if (!file_exists($course_dir)) {
+        if (!mkdir($course_dir, 0755, true)) {
+            return false;
+        }
+    }
+
+    // Generate unique filename
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = uniqid() . '.' . $extension;
+    $filepath = $course_dir . '/' . $filename;
+
+    // Move uploaded file
+    if (move_uploaded_file($file['tmp_name'], $filepath)) {
+        return $filename;
+    }
+
+    return false;
+}
+
+// Recursively delete directory and all contents
+function delete_directory_recursive($dir) {
+    if (!is_dir($dir)) {
+        return false;
+    }
+
+    // Normalize path separators for Windows compatibility
+    $dir = rtrim(str_replace('\\', '/', $dir), '/');
+
+    $files = array_diff(scandir($dir), ['.', '..']);
+
+    foreach ($files as $file) {
+        $path = $dir . '/' . $file;
+
+        if (is_dir($path)) {
+            delete_directory_recursive($path);
+        } else {
+            if (file_exists($path)) {
+                // On Windows, make sure file is not read-only
+                if (PHP_OS_FAMILY === 'Windows') {
+                    chmod($path, 0777);
+                }
+                unlink($path);
+            }
+        }
+    }
+
+    // Clear file status cache
+    clearstatcache();
+
+    // Double-check that directory is empty
+    $remaining_files = array_diff(scandir($dir), ['.', '..']);
+
+    if (empty($remaining_files)) {
+        // On Windows, make sure directory is not read-only
+        if (PHP_OS_FAMILY === 'Windows') {
+            chmod($dir, 0777);
+        }
+        return rmdir($dir);
+    } else {
+        // Log remaining files for debugging
+        error_log("Cannot delete directory $dir - remaining files: " . implode(', ', $remaining_files));
+        return false;
+    }
 }

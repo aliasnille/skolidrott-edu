@@ -53,6 +53,14 @@ get('/log-out', function() {
 get('/administration', '../views/administration.php');
 post('/administration', '../views/administration.php');
 
+// COURSE MANAGEMENT
+get('/course-management', '../views/course-management.php');
+post('/course-management', '../views/course-management.php');
+get('/course-management/create', '../views/course-management-edit.php');
+post('/course-management/create', '../views/course-management-edit.php');
+get('/course-management/edit/$_id', '../views/course-management-edit.php');
+post('/course-management/edit/$_id', '../views/course-management-edit.php');
+
 // PRESENTATION
 get('/course', '../views/course.php');
 post('/course', '../views/course.php');

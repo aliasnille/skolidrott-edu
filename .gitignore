@@ -4,4 +4,9 @@ Thumbs.db
 
 # Files
 .log
+errors.log
 config.php
+data.json
+
+uploads/*
+!uploads/.gitkeep
