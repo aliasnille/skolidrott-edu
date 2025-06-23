@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_csrf_valid()) {
                             'type' => $slide_data['type'] ?? 'image',
                             'module' => $slide_data['module'] ?? '',
                             'link' => $slide_data['link'] ?? '',
-                            'thumb' => $slide_data['thumb'] ?? 'default.png'
+                            'thumb' => $slide_data['thumb'] ?? $target_course['image']
                         ];
 
                         // Add content for text_block module only
@@ -187,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_csrf_valid()) {
                                 'type' => $slide_data['type'] ?? 'image',
                                 'module' => $slide_data['module'] ?? '',
                                 'link' => $slide_data['link'] ?? '',
-                                'thumb' => $slide_data['thumb'] ?? 'default.png'
+                                'thumb' => $slide_data['thumb'] ?? $new_course['image']
                             ];
 
                             // Add content for text_block module only
@@ -261,7 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && is_csrf_valid()) {
                             'type' => $slide_data['type'] ?? 'image',
                             'module' => $slide_data['module'] ?? '',
                             'link' => $slide_data['link'] ?? '',
-                            'thumb' => $slide_data['thumb'] ?? 'default.png'
+                            'thumb' => $slide_data['thumb'] ?? $target_course['image']
                         ];
 
                         // Handle file upload for image slides
